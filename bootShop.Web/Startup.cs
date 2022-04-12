@@ -1,6 +1,8 @@
-using bootShop.Business;
+﻿using bootShop.Business;
+using bootShop.Business.MapperProfile;
 using bootShop.DataAccess.Data;
 using bootShop.DataAccess.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,12 +32,23 @@ namespace bootShop.Web
             services.AddControllersWithViews();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ICategoryService, CategoryService>();
-            //services.AddScoped<IProductRepository, EFProductRepository>();
-            services.AddScoped<IProductRepository, DpProductRepository>();
+            services.AddScoped<IProductRepository, EFProductRepository>();
 
 
             var connectionString = Configuration.GetConnectionString("db");
             services.AddDbContext<bootShopDbContext>(opt => opt.UseSqlServer(connectionString));
+            services.AddAutoMapper(typeof(MapProfile));
+
+           
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddCookie(opt =>
+                    {
+                        opt.LoginPath = "/Users/Login";
+                        opt.AccessDeniedPath = "/Users/AccessDenied";
+                    });
+
+            // TODO 4: Login İşlemleri yapılacak
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,6 +69,7 @@ namespace bootShop.Web
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
