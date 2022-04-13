@@ -17,6 +17,7 @@ namespace bootShop.Business.MapperProfile
             CreateMap<Product, ProductListResponse>();
             CreateMap<AddProductRequest, Product>();
             CreateMap<UpdateProductRequest, Product>();
+            CreateMap<UpdateProductRequest, ProductListResponse>().ReverseMap();
         }
     }
 }

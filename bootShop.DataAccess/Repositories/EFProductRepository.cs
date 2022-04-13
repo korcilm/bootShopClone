@@ -38,7 +38,10 @@ namespace bootShop.DataAccess.Repositories
             return await context.Products.ToListAsync();
 
         }
-
+        public async Task<IList<Product>> GetAllProducts()
+        {
+            return await context.Products.Where(x => x.IsActive == true).ToListAsync();
+        }
         public async Task<Product> GetEntityById(int id)
         {
             

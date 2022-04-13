@@ -54,7 +54,7 @@ namespace bootShop.Business
 
         public async Task<ICollection<ProductListResponse>> GetProducts()
         {
-            var products = await productRepository.GetAllEntities();
+            var products = await productRepository.GetAllProducts();
             // var productListResponses = new List<ProductListResponse>();
 
             //products.ToList().ForEach(p => productListResponses.Add(new ProductListResponse

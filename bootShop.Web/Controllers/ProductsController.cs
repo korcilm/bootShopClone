@@ -1,4 +1,5 @@
-﻿using bootShop.Business;
+﻿using AutoMapper;
+using bootShop.Business;
 using bootShop.Dtos.Requests;
 using bootShop.Dtos.Responses;
 using bootShop.Entities;
@@ -13,16 +14,18 @@ using System.Threading.Tasks;
 namespace bootShop.Web.Controllers
 {
 
-    [Authorize]
+    //[Authorize]
     public class ProductsController : Controller
     {
         private readonly IProductService productService;
         private readonly ICategoryService categoryService;
+        private IMapper mapper;
 
-        public ProductsController(IProductService productService, ICategoryService categoryService)
+        public ProductsController(IProductService productService, ICategoryService categoryService, IMapper mapper)
         {
             this.productService = productService;
             this.categoryService = categoryService;
+            this.mapper = mapper;
         }
         public async Task<IActionResult> Index()
         {
@@ -111,12 +114,21 @@ namespace bootShop.Web.Controllers
             return NotFound();
         }
 
+        //[HttpPost]
+        //[ActionName(nameof(Delete))]
+        //public async Task<IActionResult> DeleteOk(int id)
+        //{
+        //    await productService.DeleteProduct(id);
+        //     return RedirectToAction(nameof(Index));
+        //}
         [HttpPost]
         [ActionName(nameof(Delete))]
         public async Task<IActionResult> DeleteOk(int id)
         {
-            await productService.DeleteProduct(id);
-             return RedirectToAction(nameof(Index));
+            var request= mapper.Map<UpdateProductRequest>(await productService.GetProductById(id));
+            request.IsActive = false;
+            await productService.UpdateProduct(request);
+            return RedirectToAction(nameof(Index));
         }
 
 

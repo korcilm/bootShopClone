@@ -57,5 +57,20 @@ namespace bootShop.DataAccess.Repositories
                 $" {nameof(entity.CreatedDate)} = '{entity.CreatedDate}', {nameof(entity.ModifiedDate)} = '{entity.ModifiedDate}', {nameof(entity.ImageUrl)} = '{entity.ImageUrl}' WHERE Id = '{entity.Id}'");
             return entity.Id;
         }
+
+        public Task<bool> IsExists(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<Product>> GetAllProducts()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Product GetEntityByIdSenkron(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

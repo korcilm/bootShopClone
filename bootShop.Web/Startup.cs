@@ -36,7 +36,7 @@ namespace bootShop.Web
 
 
             var connectionString = Configuration.GetConnectionString("db");
-            services.AddDbContext<bootShopDbContext>(opt => opt.UseSqlServer(connectionString));
+            services.AddDbContext<bootShopDbContext>(opt => opt.UseSqlServer(connectionString).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
             services.AddAutoMapper(typeof(MapProfile));
 
            
