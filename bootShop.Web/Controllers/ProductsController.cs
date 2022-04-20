@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using bootShop.Business;
+﻿using bootShop.Business;
 using bootShop.Dtos.Requests;
 using bootShop.Dtos.Responses;
 using bootShop.Entities;
@@ -14,19 +13,18 @@ using System.Threading.Tasks;
 namespace bootShop.Web.Controllers
 {
 
-    //[Authorize]
+    [Authorize(Roles = "Admin,Editor")]
     public class ProductsController : Controller
     {
         private readonly IProductService productService;
         private readonly ICategoryService categoryService;
-        private IMapper mapper;
 
-        public ProductsController(IProductService productService, ICategoryService categoryService, IMapper mapper)
+        public ProductsController(IProductService productService, ICategoryService categoryService)
         {
             this.productService = productService;
             this.categoryService = categoryService;
-            this.mapper = mapper;
         }
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var products = await productService.GetProducts();
@@ -34,6 +32,7 @@ namespace bootShop.Web.Controllers
 
         }
         [HttpGet]
+       
         public IActionResult Create()
         {
             List<SelectListItem> selectedItems = GetCategoriesForDropDown();
@@ -93,7 +92,7 @@ namespace bootShop.Web.Controllers
             if (ModelState.IsValid)
             {
                 int affectedRowsCount = await productService.UpdateProduct(request);
-                if (affectedRowsCount>0)
+                if (affectedRowsCount > 0)
                 {
                     return RedirectToAction(nameof(Index));
                 }
@@ -108,26 +107,17 @@ namespace bootShop.Web.Controllers
         {
             if (await productService.IsExist(id))
             {
-                var product  = await productService.GetProductById(id);
+                var product = await productService.GetProductById(id);
                 return View(product);
             }
             return NotFound();
         }
 
-        //[HttpPost]
-        //[ActionName(nameof(Delete))]
-        //public async Task<IActionResult> DeleteOk(int id)
-        //{
-        //    await productService.DeleteProduct(id);
-        //     return RedirectToAction(nameof(Index));
-        //}
         [HttpPost]
         [ActionName(nameof(Delete))]
         public async Task<IActionResult> DeleteOk(int id)
         {
-            var request= mapper.Map<UpdateProductRequest>(await productService.GetProductById(id));
-            request.IsActive = false;
-            await productService.UpdateProduct(request);
+            await productService.DeleteProduct(id);
             return RedirectToAction(nameof(Index));
         }
 

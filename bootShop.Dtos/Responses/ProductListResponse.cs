@@ -15,6 +15,5 @@ namespace bootShop.Dtos.Responses
         public string Descriptipn { get; set; }
         public int? CategoryId { get; set; }
         public string ImageUrl { get; set; }
-        public bool IsActive { get; set; }
     }
 }
