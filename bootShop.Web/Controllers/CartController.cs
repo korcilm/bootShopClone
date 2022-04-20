@@ -35,10 +35,30 @@ namespace bootShop.Web.Controllers
                 saveToSession(cartCollection);
                 return Json($"{product.Name} Sepete Eklendi");
             }
-
-
             return NotFound();
-
+        }
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (await productService.IsExist(id))
+            {
+                var product = await productService.GetProductById(id);
+                CartCollection cartCollection = getCollectionFromSession();
+                cartCollection.Delete(id);
+                saveToSession(cartCollection);
+                return Json($"{product.Name} Sepetten Silindi");
+            }
+            return NotFound();
+        }
+        public async Task<IActionResult> AllDelete()
+        {
+            CartCollection cartCollection = getCollectionFromSession();
+            if (cartCollection.CartItems.Count > 0)
+            {
+                cartCollection.ClearAll();
+                saveToSession(cartCollection);
+                return Json("Tüm Ürünler Sepetten Silindi");
+            }
+            return NotFound();
         }
 
         private void saveToSession(CartCollection cartCollection)
@@ -60,7 +80,7 @@ namespace bootShop.Web.Controllers
             //    cartCollection = JsonConvert.DeserializeObject<CartCollection>(cartCollectionJson);
 
             //}
-            cartCollection = HttpContext.Session.GetJson<CartCollection>("sepetim") ?? new CartCollection();          
+            cartCollection = HttpContext.Session.GetJson<CartCollection>("sepetim") ?? new CartCollection();
 
 
             return cartCollection;

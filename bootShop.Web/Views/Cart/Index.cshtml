@@ -26,14 +26,48 @@ else
                     <td>@cart.Product.Name</td>
                     <td>@cart.Quantity</td>
                     <td>@(cart.Product.Price * (1 - cart.Product.Discount) * cart.Quantity)</td>
-
+                    <td>
+                        <button class="btn btn-outline-danger  delete" data-id="@cart.Product.Id">Sil</button>
+                    </td>
                 </tr>
             }
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="4">Toplam: @Model.GetTotalPrice() TL</td>
+                <td colspan="3">Toplam: @Model.GetTotalPrice() TL</td>
+                <td colspan="1"><button class="btn btn-outline-danger  allDelete">Tümünü Sil</button></td>
             </tr>
         </tfoot>
     </table>
+}
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('.delete').on('click', function () {
+                let id = $(this).data('id');
+                $.ajax({
+                    url: '/Cart/Delete/' + id,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        alertify.success(data);
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.allDelete').on('click', function () {
+                $.ajax({
+                    url: '/Cart/AllDelete/',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        alertify.success(data);
+                    }
+                });
+            });
+        });
+    </script>
 }
